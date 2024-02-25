@@ -65,3 +65,13 @@ func (it *Iterator) Bytes() []byte {
 func (it *Iterator) String() string {
 	return string(it.v)
 }
+
+// Cap structlen 结构体带 padding 的长度
+func (it *Iterator) Cap() uint32 {
+	return it.structlen
+}
+
+// Len reallen (迭代器目前迭代到的实值总长, 不带 padding)
+func (it *Iterator) Len() uint32 {
+	return it.reallen
+}
