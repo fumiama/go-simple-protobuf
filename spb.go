@@ -2,7 +2,7 @@ package spb
 
 import "io"
 
-func ReadNum(r io.Reader) (n uint32, cnt int, err error) {
+func ReadNum(r io.Reader) (n uint32, cnt uint32, err error) {
 	var buf [1]byte
 	for cnt < 5 {
 		_, err = r.Read(buf[:])
@@ -43,7 +43,7 @@ type SimplePB struct {
 }
 
 func NewSimplePB(r io.Reader) (s SimplePB, err error) {
-	cnt := 0
+	cnt := uint32(0)
 	s.StructLen, cnt, err = ReadNum(r)
 	if err != nil {
 		s.RealLen = uint32(cnt)
@@ -55,7 +55,7 @@ func NewSimplePB(r io.Reader) (s SimplePB, err error) {
 		return
 	}
 	var offset, datalen uint32
-	n := 0
+	n := uint32(0)
 	for i := uint32(0); i < s.StructLen; i += offset {
 		offset, n, err = ReadNum(r)
 		cnt += n
@@ -75,8 +75,9 @@ func NewSimplePB(r io.Reader) (s SimplePB, err error) {
 			break
 		}
 		t := make([]byte, datalen)
-		n, err = r.Read(t)
-		cnt += n
+		x := 0
+		x, err = r.Read(t)
+		cnt += uint32(x)
 		if err != nil {
 			break
 		}
